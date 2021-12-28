@@ -20,6 +20,41 @@ class Block(object):
     def __post_init__(self):
         self.__hash = self.compute_hash()
 
+    @property
+    def index(self) -> int:
+        """Get the index of the block.
+        :return: The index of the block.
+        """
+        return self.__index
+
+    @property
+    def hash(self) -> str:
+        """Get the hash of the block.
+        :return: The hash of the block.
+        """
+        return self.__hash
+
+    @property
+    def data(self) -> List[Transaction]:
+        """Get the data of the block.
+        :return: The data of the block.
+        """
+        return self.__data
+
+    @property
+    def timestamp(self) -> float:
+        """Get the timestamp of the block.
+        :return: The timestamp of the block.
+        """
+        return self.__timestamp
+
+    @property
+    def previous_hash(self) -> str:
+        """Get the previous hash of the block.
+        :return: The previous hash of the block.
+        """
+        return self.__previous_hash
+
     def compute_hash(self) -> str:
         """Calculates the hash of the block.
         :return: The calculated hash.
@@ -34,8 +69,8 @@ class Block(object):
         """
         return (
                 self.__hash == self.compute_hash()
-                and self.__index == other.__index + 1
-                and self.__previous_hash == other.__hash
+                and self.__index == other.index + 1
+                and self.__previous_hash == other.hash
         )
 
     def mine(self, difficulty: int) -> None:
@@ -48,5 +83,5 @@ class Block(object):
 
 
 class GenesisBlock(Block):
-    def __init__(self) -> None:
-        super().__init__(0, time(), [], None)
+    def __init__(self, data: List[Transaction]) -> None:
+        super().__init__(0, time(), data, None)
