@@ -31,11 +31,16 @@ class Block(object):
         hash_str = f"{self.__index}-{self.__timestamp}-{self.__data}-{self.__previous_hash}"
         return sha256(hash_str.encode()).hexdigest()
 
-    def check(self) -> bool:
+    def check(self, other: "Block") -> bool:
         """Check whether the block is valid.
+        :param other: The other block.
         :return: True of the block is valid, False otherwise.
         """
-        ...
+        return (
+                self.__hash == self.compute_hash() and
+                self.__index == other.__index + 1 and
+                self.__previous_hash == other.__hash
+        )
 
     def __eq__(self, other: "Block") -> bool:
         """Check whether the block is equal to another block.
@@ -50,20 +55,7 @@ class Block(object):
         """
         ...
 
-    def isnext(self, other: "Block") -> bool:
-        """Check whether the block is a child of another block.
-        :param other: The other block.
-        :return: True if the block is a child of the other block, False otherwise.
-        """
-        ...
-
 
 class GenesisBlock(Block):
     def __init__(self) -> None:
         super().__init__()
-
-    def check(self) -> bool:
-        """Check whether the block is valid.
-        :return: True of the block is valid, False otherwise.
-        """
-        ...
