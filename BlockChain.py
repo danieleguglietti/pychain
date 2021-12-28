@@ -13,11 +13,12 @@ from Transaction import Transaction
 
 @dataclass
 class BlockChain(object):
-    __blocks: List[Block] = field(init=False, default_factory=list)
-    __transactions: List[Transaction] = field(init=False, default_factory=list)
+    __difficulty: int = field(init=False, default=4)
+    __blocks: List[Block] = field(init=False)
+    __transactions: List[Transaction] = field(init=False)
 
     def __init__(self):
-        self.__blocks = [GenesisBlock([Transaction()])]
+        self.__blocks = [GenesisBlock([Transaction("0", "0", 0)])]
         self.__transactions = []
 
     @property
@@ -47,7 +48,7 @@ class BlockChain(object):
         :param recipient: The recipient of the transaction.
         :param amount: The amount of the transaction.
         """
-        transaction = Transaction()
+        transaction = Transaction(sender, recipient, amount)
         self.__transactions.append(transaction)
         return transaction
 
@@ -61,6 +62,7 @@ class BlockChain(object):
             __data=self.__transactions,
             __previous_hash=self.last.hash
         )
+        block.mine(self.__difficulty)
         self.__blocks.append(block)
         self.__transactions = []
         return block
