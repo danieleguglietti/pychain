@@ -49,7 +49,9 @@ class BlockChain(object):
         :param recipient: The recipient of the transaction.
         :param amount: The amount of the transaction.
         """
-        ...
+        transaction = Transaction()
+        self.__transactions.append(transaction)
+        return transaction
 
     def create_block(self) -> Block:
         """ Create a new block and add it to the chain.
