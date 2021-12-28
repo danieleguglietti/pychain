@@ -1,4 +1,5 @@
 from Block import Block
+from Peer import Peer
 
 
 class Network(object):
@@ -8,7 +9,13 @@ class Network(object):
         """
         ...
 
-    def __iter__(self):
+    def accept(self, peer: Peer) -> None:
+        """Accept a new node in the network
+        :param peer: the new node
+        """
+        ...
+
+    def __iter__(self) -> Peer:
         """Iterate over all the nodes in the network
         """
         ...
