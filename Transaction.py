@@ -1,7 +1,5 @@
 """Defines Transaction class
-TODO: compute_hash
 TODO: sign
-TODO: check
 """
 from dataclasses import dataclass
 from hashlib import sha256
@@ -51,4 +49,7 @@ class Transaction(object):
         """Checks whether the transaction is valid.
         :return: True if the transaction is valid, False otherwise.
         """
-        ...
+        return (
+                self.sender != self.recipient
+                and self.amount > 0
+        )
