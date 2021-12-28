@@ -1,5 +1,4 @@
 """Defines BlockChain class.
-TODO: add_transaction
 TODO: create_block
 TODO: check
 TODO: resolve
@@ -7,6 +6,7 @@ TODO: getbalance
 TODO: gettransactions
 """
 from dataclasses import dataclass, field
+from time import time
 from typing import List
 
 from Block import Block, GenesisBlock
@@ -57,7 +57,15 @@ class BlockChain(object):
         """ Create a new block and add it to the chain.
         :return: The new block.
         """
-        ...
+        block = Block(
+            __index=len(self.__blocks),
+            __timestamp=time(),
+            __data=self.__transactions,
+            __previous_hash=self.last.hash
+        )
+        self.__blocks.append(block)
+        self.__transactions = []
+        return block
 
     def check(self) -> bool:
         """Check the integrity of the chain.
