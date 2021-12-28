@@ -1,6 +1,4 @@
 """Defines BlockChain class.
-TODO: create_block
-TODO: check
 TODO: resolve
 TODO: getbalance
 TODO: gettransactions
@@ -71,7 +69,11 @@ class BlockChain(object):
         """Check the integrity of the chain.
         :return: True if the chain is valid, False otherwise.
         """
-        ...
+        for i in range(1, len(self.__blocks)):
+            prev, curr = self.__blocks[i - 1], self.__blocks[i]
+            if not curr.check(prev):
+                return False
+        return True
 
     def resolve(self) -> bool:
         """Resolve conflicts by replacing the chain with the longest one.
