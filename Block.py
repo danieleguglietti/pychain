@@ -6,16 +6,30 @@ TODO: __eq__
 TODO: mine
 TODO: isnext
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from hashlib import sha256
+from typing import List
+
+from Transaction import Transaction
 
 
 @dataclass
 class Block(object):
+    __index: int
+    __timestamp: float
+    __data: List[Transaction]
+    __previous_hash: str
+    __hash: str = field(init=False)
+
+    def __post_init__(self):
+        self.__hash = self.compute_hash()
+
     def compute_hash(self) -> str:
         """Calculates the hash of the block.
         :return: The calculated hash.
         """
-        ...
+        hash_str = f"{self.__index}-{self.__timestamp}-{self.__data}-{self.__previous_hash}"
+        return sha256(hash_str.encode()).hexdigest()
 
     def check(self) -> bool:
         """Check whether the block is valid.
