@@ -4,6 +4,7 @@ TODO: sign
 TODO: check
 """
 from dataclasses import dataclass
+from hashlib import sha256
 
 
 @dataclass
@@ -37,7 +38,8 @@ class Transaction(object):
         """Calculates the hash of the transaction.
         :return: The calculated hash.
         """
-        ...
+        hash_str = f"{self.sender}:{self.recipient}x{self.amount}"
+        return sha256(hash_str.encode()).hexdigest()
 
     def sign(self, private_key: str) -> None:
         """Signs the transaction with the given private key.
