@@ -26,7 +26,7 @@ class Block(object):
         """Calculates the hash of the block.
         :return: The calculated hash.
         """
-        hash_str = f"{self.__index}-{self.__timestamp}-{self.__data}-{self.__previous_hash}"
+        hash_str = f"{self.__index}x{self.__timestamp}{self.__data}{self.__previous_hash}"
         return sha256(hash_str.encode()).hexdigest()
 
     def check(self, other: "Block") -> bool:
@@ -35,9 +35,9 @@ class Block(object):
         :return: True of the block is valid, False otherwise.
         """
         return (
-                self.__hash == self.compute_hash() and
-                self.__index == other.__index + 1 and
-                self.__previous_hash == other.__hash
+                self.__hash == self.compute_hash()
+                and self.__index == other.__index + 1
+                and self.__previous_hash == other.__hash
         )
 
     def __eq__(self, other: "Block") -> bool:
@@ -45,7 +45,15 @@ class Block(object):
         :param other: The other block.
         :return: True if the blocks are equal, False otherwise.
         """
-        ...
+        return (
+                isinstance(other, Block)
+                and self.__hash == other.__hash
+                and self.__index == other.__index
+                and self.__timestamp == other.__timestamp
+                and self.__data == other.__data
+                and self.__previous_hash == other.__previous_hash
+                and self.compute_hash() == other.compute_hash()
+        )
 
     def mine(self, difficulty: int) -> None:
         """Mine the block.
