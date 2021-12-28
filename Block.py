@@ -1,13 +1,11 @@
 """Defines block classes and other utility functions for blockchain's blocks.
-TODO: properties
-TODO: compute_hash
-TODO: check
 TODO: __eq__
 TODO: mine
 TODO: isnext
 """
 from dataclasses import dataclass, field
 from hashlib import sha256
+from time import time
 from typing import List
 
 from Transaction import Transaction
@@ -58,4 +56,4 @@ class Block(object):
 
 class GenesisBlock(Block):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(0, time(), [], None)
