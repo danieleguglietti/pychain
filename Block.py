@@ -2,7 +2,6 @@
 """
 from dataclasses import dataclass, field
 from hashlib import sha256
-from time import time
 from typing import List
 
 from Transaction import Transaction
@@ -84,7 +83,7 @@ class Block(object):
 
 class GenesisBlock(Block):
     def __init__(self, data: List[Transaction]) -> None:
-        super().__init__(0, time(), data, None)
+        super().__init__(0, 0, data, None)
 
     def check(self, other: "Block") -> bool:
         return (

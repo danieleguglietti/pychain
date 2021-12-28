@@ -1,5 +1,4 @@
 """Defines BlockChain class.
-TODO: properties
 TODO: add_transaction
 TODO: create_block
 TODO: check
@@ -7,15 +6,43 @@ TODO: resolve
 TODO: getbalance
 TODO: gettransactions
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
-from Block import Block
+from Block import Block, GenesisBlock
 from Transaction import Transaction
 
 
 @dataclass
 class BlockChain(object):
+    __blocks: List[Block] = field(init=False, default_factory=list)
+    __transactions: List[Transaction] = field(init=False, default_factory=list)
+
+    def __init__(self):
+        self.__blocks = [GenesisBlock([Transaction()])]
+        self.__transactions = []
+
+    @property
+    def blocks(self) -> List[Block]:
+        """Return the list of blocks.
+        :return: The list of blocks.
+        """
+        return self.__blocks
+
+    @property
+    def genesis(self) -> Block:
+        """Return the genesis block.
+        :return: The genesis block.
+        """
+        return self.__blocks[0]
+
+    @property
+    def last(self) -> Block:
+        """Return the last block.
+        :return: The last block.
+        """
+        return self.__blocks[-1]
+
     def add_transaction(self, sender: str, recipient: str, amount: float) -> Transaction:
         """Add a transaction to the blockchain.
         :param sender: The sender of the transaction.
