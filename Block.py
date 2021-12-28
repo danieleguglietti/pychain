@@ -85,3 +85,11 @@ class Block(object):
 class GenesisBlock(Block):
     def __init__(self, data: List[Transaction]) -> None:
         super().__init__(0, time(), data, None)
+
+    def check(self, other: "Block") -> bool:
+        return (
+                self.index == 0
+                and self.hash == self.compute_hash()
+                and self.previous_hash is None
+                and other.previous_hash == self.hash
+        )
