@@ -13,8 +13,26 @@ class Block(object):
     __timestamp: float
     __data: List[Transaction]
     __previous_hash: str
-    __nonce: int = field(init=False, default=0)
+    __nonce: int = field(default=0)
     __hash: str = field(init=False, default="")
+
+    @staticmethod
+    def from_dict(block: dict) -> "Block":
+        """Create a block from a dictionary.
+        :param block: The dictionary representation of the block.
+        :return: The block.
+        """
+        required = ["index", "timestamp", "data", "previous_hash", "nonce"]
+        if not all(key in block for key in required):
+            raise ValueError("Invalid block.")
+        data = [Transaction.from_dict(tx) for tx in block["data"]]
+        return Block(
+            block["index"],
+            block["timestamp"],
+            data,
+            block["previous_hash"],
+            block["nonce"]
+        )
 
     def __post_init__(self):
         self.__hash = self.compute_hash()
@@ -84,12 +102,12 @@ class Block(object):
         :return: The dictionary representation of the block.
         """
         return {
+            "hash": self.__hash,
             "index": self.__index,
             "timestamp": self.__timestamp,
             "data": self.__data,
             "previous_hash": self.__previous_hash,
-            "nonce": self.__nonce,
-            "hash": self.__hash
+            "nonce": self.__nonce
         }
 
     def __repr__(self) -> str:

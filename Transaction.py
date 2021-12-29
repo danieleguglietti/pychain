@@ -1,7 +1,7 @@
 """Defines Transaction class
 TODO: sign
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from hashlib import sha256
 
 
@@ -10,6 +10,25 @@ class Transaction(object):
     __sender: str
     __recipient: str
     __amount: float
+    __hash: str = field(init=False, default="")
+
+    @staticmethod
+    def from_dict(transaction: dict) -> 'Transaction':
+        """Creates a transaction from a dictionary.
+        :param transaction: The transaction as a dictionary.
+        :return: The transaction.
+        """
+        required = ["sender", "recipient", "amount"]
+        if not all(key in transaction for key in required):
+            raise ValueError("Transaction is missing required fields.")
+        return Transaction(
+            transaction["sender"],
+            transaction["recipient"],
+            transaction["amount"]
+        )
+
+    def __post_init__(self):
+        self.__hash = self.compute_hash()
 
     @property
     def sender(self) -> str:
@@ -49,8 +68,9 @@ class Transaction(object):
         :return: True if the transaction is valid, False otherwise.
         """
         return (
-                self.sender != self.recipient
-                and self.amount > 0
+                self.__hash == self.compute_hash()
+                and self.__sender != self.__recipient
+                and self.__amount > 0
         )
 
     def as_dict(self) -> dict:
@@ -58,9 +78,10 @@ class Transaction(object):
         :return: The transaction as a dictionary.
         """
         return {
-            'sender': self.sender,
-            'recipient': self.recipient,
-            'amount': self.amount
+            'hash': self.__hash,
+            'sender': self.__sender,
+            'recipient': self.__recipient,
+            'amount': self.__amount
         }
 
     def __repr__(self) -> str:
