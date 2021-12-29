@@ -14,7 +14,7 @@ class Block(object):
     __data: List[Transaction]
     __previous_hash: str
     __nonce: int = field(init=False, default=0)
-    __hash: str = field(init=False)
+    __hash: str = field(init=False, default="")
 
     def __post_init__(self):
         self.__hash = self.compute_hash()
@@ -58,8 +58,7 @@ class Block(object):
         """Calculates the hash of the block.
         :return: The calculated hash.
         """
-        hash_str = f"{self.__index}x{self.__timestamp}{self.__data}x{self.__nonce}x{self.__previous_hash}"
-        return sha256(hash_str.encode()).hexdigest()
+        return sha256(str(self).encode()).hexdigest()
 
     def check(self, other: "Block") -> bool:
         """Check whether the block is valid.
@@ -79,6 +78,22 @@ class Block(object):
         while not self.__hash.startswith("0" * difficulty):
             self.__nonce += 1
             self.__hash = self.compute_hash()
+
+    def as_dict(self) -> dict:
+        """Convert the block to a dictionary.
+        :return: The dictionary representation of the block.
+        """
+        return {
+            "index": self.__index,
+            "timestamp": self.__timestamp,
+            "data": self.__data,
+            "previous_hash": self.__previous_hash,
+            "nonce": self.__nonce,
+            "hash": self.__hash
+        }
+
+    def __repr__(self) -> str:
+        return str(self.as_dict())
 
 
 class GenesisBlock(Block):

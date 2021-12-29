@@ -36,8 +36,7 @@ class Transaction(object):
         """Calculates the hash of the transaction.
         :return: The calculated hash.
         """
-        hash_str = repr(self)
-        return sha256(hash_str.encode()).hexdigest()
+        return sha256(str(self).encode()).hexdigest()
 
     def sign(self, private_key: str) -> None:
         """Signs the transaction with the given private key.
@@ -54,5 +53,15 @@ class Transaction(object):
                 and self.amount > 0
         )
 
+    def as_dict(self) -> dict:
+        """Returns the transaction as a dictionary.
+        :return: The transaction as a dictionary.
+        """
+        return {
+            'sender': self.sender,
+            'recipient': self.recipient,
+            'amount': self.amount
+        }
+
     def __repr__(self) -> str:
-        return f"{self.sender}:{self.recipient}x{self.amount}"
+        return str(self.as_dict())
