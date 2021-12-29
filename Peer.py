@@ -9,3 +9,10 @@ class Peer(object):
         :return: List of blocks
         """
         ...
+
+    def get_block(self, index: int) -> Block:
+        """Get block of the peer
+        :param index: index of the block
+        :return: Block
+        """
+        ...
