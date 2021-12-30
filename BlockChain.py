@@ -4,7 +4,7 @@ TODO: gettransactions
 """
 from dataclasses import dataclass, field
 from time import time
-from typing import List
+from typing import List, Optional
 
 from Block import Block, GenesisBlock
 from Network import Network
@@ -75,12 +75,15 @@ class BlockChain(object):
         self.__transactions = []
         return block
 
-    def check(self) -> bool:
-        """Check the integrity of the chain.
+    def check(self, chain: Optional[List[Block]]) -> bool:
+        """Check the integrity of the chain provided if any, otherwise the chain of the calling instance.
+        :param chain: The chain to check.
         :return: True if the chain is valid, False otherwise.
         """
-        for i in range(1, len(self.__blocks)):
-            prev, curr = self.__blocks[i - 1], self.__blocks[i]
+        __blocks = chain if chain is not None else self.__blocks
+
+        for i in range(1, len(__blocks)):
+            prev, curr = __blocks[i - 1], __blocks[i]
             if not curr.check(prev):
                 return False
         return True
@@ -94,7 +97,7 @@ class BlockChain(object):
 
         for node in self.__network:
             chain = node.get_blocks()
-            if len(chain) > max_length:
+            if len(chain) > max_length and self.check(chain):
                 max_chain, max_length = chain, len(chain)
 
         if max_chain is not None:
