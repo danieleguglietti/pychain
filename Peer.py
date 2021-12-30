@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List
+
+from requests import get
 
 from Block import Block
 
@@ -15,15 +16,17 @@ class Peer(object):
         """
         return self.__address
 
-    def get_blocks(self) -> List[Block]:
+    def get_blocks(self):
         """Get blocks of the peer
         :return: List of blocks
         """
-        ...
+        response = get(f"http://{self.__address}:8000/blocks")
+        return [Block.from_dict(block) for block in response.json()]
 
     def get_block(self, index: int) -> Block:
         """Get block of the peer
         :param index: index of the block
         :return: Block
         """
-        ...
+        response = get(f"http://{self.__address}:8000/blocks/{index}")
+        return Block.from_dict(response.json())
