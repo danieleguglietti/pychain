@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, Iterator
 
+from requests import get
+
 from Block import Block
 from Peer import Peer
 
@@ -14,7 +16,7 @@ class Network(object):
         :param block: the new block
         """
         for node in self.__nodes:
-            ...
+            get(f"http://{node.address}/resolve")
 
     def accept(self, peer: Peer) -> None:
         """Accept a new node in the network
