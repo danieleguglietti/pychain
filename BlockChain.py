@@ -1,5 +1,4 @@
 """Defines BlockChain class.
-TODO: resolve
 TODO: getbalance
 TODO: gettransactions
 """
