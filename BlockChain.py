@@ -8,6 +8,7 @@ from time import time
 from typing import List
 
 from Block import Block, GenesisBlock
+from Network import Network
 from Transaction import Transaction
 
 
@@ -16,6 +17,7 @@ class BlockChain(object):
     __difficulty: int = field(init=False, default=4)
     __blocks: List[Block] = field(init=False)
     __transactions: List[Transaction] = field(init=False)
+    __network: Network = field(init=False, default=Network())
 
     def __init__(self):
         self.__blocks = [GenesisBlock([Transaction("0", "0", 0)])]
@@ -41,6 +43,13 @@ class BlockChain(object):
         :return: The last block.
         """
         return self.__blocks[-1]
+
+    @property
+    def network(self) -> Network:
+        """Return the network.
+        :return: The network.
+        """
+        return self.__network
 
     def add_transaction(self, sender: str, recipient: str, amount: float) -> Transaction:
         """Add a transaction to the blockchain.
@@ -81,7 +90,19 @@ class BlockChain(object):
         """Resolve conflicts by replacing the chain with the longest one.
         :return: True if the chain was replaced, False otherwise.
         """
-        ...
+        max_chain = None
+        max_length = len(self.__blocks)
+
+        for node in self.__network:
+            chain = node.get_blocks()
+            if len(chain) > max_length:
+                max_chain, max_length = chain, len(chain)
+
+        if max_chain is not None:
+            self.__blocks = max_chain
+            return True
+
+        return False
 
     def getbalance(self, address: str) -> float:
         """Return the balance of an address.
