@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import reduce
 
 from requests import get
 
@@ -30,3 +31,6 @@ class Peer(object):
         """
         response = get(f"http://{self.__address}:8000/blocks/{index}")
         return Block.from_dict(response.json())
+
+    def __hash__(self):
+        return reduce(lambda x, y: x * y, [ord(c) for c in self.__address])

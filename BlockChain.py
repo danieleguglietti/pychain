@@ -13,7 +13,7 @@ from Transaction import Transaction
 
 @dataclass
 class BlockChain(object):
-    __difficulty: int = field(init=False, default=4)
+    __difficulty: int = field(init=False, default=6)
     __blocks: List[Block] = field(init=False)
     __transactions: List[Transaction] = field(init=False)
     __network: Network = field(init=False, default=Network())
@@ -28,6 +28,13 @@ class BlockChain(object):
         :return: The list of blocks.
         """
         return self.__blocks
+
+    @property
+    def transactions(self) -> List[Transaction]:
+        """Return the list of transactions.
+        :return: The list of transactions.
+        """
+        return self.__transactions
 
     @property
     def genesis(self) -> Block:
@@ -111,11 +118,25 @@ class BlockChain(object):
         :param address: The address to check.
         :return: The balance of the address.
         """
-        ...
+        balance = 0
+        for block in self.__blocks:
+            for transaction in block.data:
+                if transaction.sender == address:
+                    balance -= transaction.amount
+                if transaction.recipient == address:
+                    balance += transaction.amount
+
+        return balance
 
     def gettransactions(self, address: str) -> List[Transaction]:
         """Return a list of transactions of an address.
         :param address: The address to check.
         :return: The list of transactions of the address.
         """
-        ...
+        transactions = []
+        for block in self.__blocks:
+            transactions.extend([transaction for transaction in block.data if
+                                 transaction.sender == address or transaction.recipient == address])
+        transactions.extend([transaction for transaction in self.__transactions if
+                             transaction.sender == address or transaction.recipient == address])
+        return transactions
